@@ -1,0 +1,23 @@
+{
+  "name": "react-marzipano",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Louis Chan",
+  "license": "MIT",
+  "scripts": {
+    "dev": "yarn run storybook",
+    "storybook": "start-storybook",
+    "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "@babel/core": "^7.7.0",
+    "@storybook/react": "^5.2.5",
+    "babel-loader": "^8.0.6",
+    "marzipano": "^0.9.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4"
+  }
+}
