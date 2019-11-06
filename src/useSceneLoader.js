@@ -53,13 +53,13 @@ function makeOnRenderCompleteListener(onLoadListener) {
   }
 }
 
-function useSceneLoader(viewer, scenes, currentSceneId, transitionDuration = 1000) {
+function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration = 1000) {
   // Check parameters are correct
   useEffect(() => {
-    if (!viewer && scenes && scenes.length > 0) {
-      throw TypeError('Viewer must be provided to load scenes')
+    if (!viewer && scenesToLoad && scenesToLoad.length > 0) {
+      throw TypeError('Viewer must be provided to load scenesToLoad')
     }
-  }, [viewer, scenes])
+  }, [viewer, scenesToLoad])
 
 
   // Loads any new scenes passed in, and handles their clean up when they are
@@ -71,9 +71,9 @@ function useSceneLoader(viewer, scenes, currentSceneId, transitionDuration = 100
       return { previous: state.current, current: newListener }
     }, { previous: null, current: null })
   useEffect(() => {
-    if (viewer && scenes) {
+    if (viewer && scenesToLoad) {
       const stage = viewer.stage()
-      for (const [sceneId, sceneSpec] of Object.entries(scenes)) {
+      for (const [sceneId, sceneSpec] of Object.entries(scenesToLoad)) {
         if (!loadedScenes[sceneId]) {
           const newScene = loadScene(sceneSpec)
           setLoadedScenes({ ...loadedScenes, sceneId: newScene })
@@ -88,15 +88,15 @@ function useSceneLoader(viewer, scenes, currentSceneId, transitionDuration = 100
     }
 
     return () => {
-      if (viewer && scenes) {
+      if (viewer && scenesToLoad) {
         for (const [sceneId, scene] of Object.entries(loadedScenes)) {
-          if (!scenes[sceneId]) {
+          if (!scenesToLoad[sceneId]) {
             viewer.destroyScene(scene)
           }
         }
       }
     }
-  }, [viewer, scenes])
+  }, [viewer, scenesToLoad])
 
 
   // Switch to a new currentScene if it was set in above effect
