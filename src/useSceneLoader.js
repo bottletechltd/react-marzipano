@@ -32,6 +32,7 @@ function loadScene (viewer, sceneSpec) {
 function makeOnRenderCompleteListener (viewer, onLoadListener) {
   return function onRenderComplete(stable) {
     if (stable) {
+      console.log('render complete')
       if (onLoadListener) {
         onLoadListener()
       }
@@ -52,45 +53,50 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
   // Loads any new scenes passed in, and handles their clean up when they are
   // not referenced anymore
   const [loadedScenes, setLoadedScenes] = useState({})
-  const [currentScene, setCurrentScene] = useState(null)
-  const [renderCompleteListener, dispatchRenderCompleteListener] =
-    useReducer((state, newListener) => {
-      return { previous: state.current, current: newListener }
-    }, { previous: null, current: null })
+  const [onLoadListeners, setOnLoadListeners] = useState({})
   useEffect(() => {
     if (viewer && scenesToLoad) {
       const stage = viewer.stage()
+
+      let newScenes = {}
       for (const [sceneId, sceneSpec] of Object.entries(scenesToLoad)) {
         if (!loadedScenes[sceneId]) {
           const newScene = loadScene(viewer, sceneSpec)
-          setLoadedScenes({ ...loadedScenes, sceneId: newScene })
-
-          if (currentSceneId === sceneId) {
-            setCurrentScene(newScene)
-            const newListener = makeOnRenderCompleteListener(viewer, sceneSpec.onLoad)
-            dispatchRenderCompleteListener(newListener)
-          }
+          newScenes = { ...newScenes, [sceneId]: { scene: newScene, onLoad: sceneSpec.onLoad } }
         }
       }
+      setLoadedScenes(newScenes)
     }
 
     return () => {
       if (viewer && scenesToLoad) {
-        for (const [sceneId, scene] of Object.entries(loadedScenes)) {
+        let remainingScenes = {}
+        for (const [sceneId, loadedScene] of Object.entries(loadedScenes)) {
           if (!scenesToLoad[sceneId]) {
-            viewer.destroyScene(scene)
+            viewer.destroyScene(loadedScene.scene)
+          } else {
+            remainingScenes = { ...remainingScenes, [sceneId]: loadedScene }
           }
         }
+        setLoadedScenes(remainingScenes)
       }
     }
   }, [viewer, scenesToLoad])
 
   // Switch to a new currentScene if it was set in above effect
+  // Also dispatch a onRenderComplete listener for when the scene has been rendered
+  const [renderCompleteListener, dispatchRenderCompleteListener] =
+    useReducer((state, newListener) => {
+      return { previous: state.current, current: newListener }
+    }, { previous: null, current: null })
   useEffect(() => {
-    if (viewer && currentScene) {
-      currentScene.switchTo({ transitionDuration })
+    if (viewer && currentSceneId && loadedScenes[currentSceneId]) {
+      const toLoad = loadedScenes[currentSceneId]
+      toLoad.scene.switchTo({ transitionDuration })
+      const newListener = makeOnRenderCompleteListener(viewer, toLoad.onLoad)
+      dispatchRenderCompleteListener(newListener)
     }
-  }, [viewer, currentScene])
+  }, [viewer, currentSceneId, loadedScenes, onLoadListeners])
 
   // Handle adding a new listener to stage if it was set above
   useEffect(() => {
@@ -104,7 +110,7 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
     }
   }, [viewer, renderCompleteListener])
 
-  return currentScene
+  return loadedScenes
 }
 
 export default useSceneLoader
