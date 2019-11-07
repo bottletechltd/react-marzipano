@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import styled from 'styled-components'
 
 import rootReducer from 'store'
 import useViewer from 'useViewer'
-import useSceneLoader from 'scenes/useSceneLoader'
-import useHotspotLoader from 'hotspots/useHotspotLoader'
+import { useCreateSceneSpecs, useSceneLoader } from 'scenes'
+import { useCreateHotspots } from 'hotspots'
 
 
 const store = createStore(rootReducer)
@@ -21,33 +21,13 @@ export default function Viewer360(props) {
   const viewerCanvas = useRef(null)
   const viewer = useViewer(viewerCanvas)
 
-  const currentScene = props.currentScene
-  const scenesProp = props.scenes
-  const hotspotsProp = props.hotspots || []
+  const currentSceneId = props.currentScene
+  const sceneSpecs = useCreateSceneSpecs(props)
+  const loadedScenes = useSceneLoader(viewer, sceneSpecs, currentSceneId)
+  const currentScene = currentSceneId && loadedScenes ? loadedScenes[currentSceneId] : null
+  const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
 
-  const [scenesToCreate, setScenesToCreate] = useState({})
-  useEffect(() => {
-    const children = React.Children.toArray(props.children)
-    setScenesToCreate({
-      ...(scenesProp || {}),
-      ...(Object.fromEntries(
-        children.filter(child => child.type.name === 'Scene').map(
-          scene => {
-            const { id, ...otherProps } = scene.props
-            return [id, { ...otherProps }]
-          }
-        )
-      ))
-    })
-  }, [scenesProp])
-  useSceneLoader(viewer, scenesToCreate, currentScene)
-
-  const hotspotsToCreate = [
-    ...hotspotsProp.map(props => <Hotspot viewer={viewer} {...props} />),
-    //...children.filter(child => child.type.name === 'Hotspot').map(
-    //  hotspot => React.cloneElement(hotspot, { viewer } )
-    //)
-  ]
+  const hotspotsToCreate = useCreateHotspots(viewer, hotspotContainer, props)
 
   return (
     <Provider store={store}>
