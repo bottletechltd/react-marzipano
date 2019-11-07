@@ -13,10 +13,10 @@ module.exports = {
     ]
   },
   output: {
+    filename: 'index.js',
     path: path.resolve(__dirname, 'dist/'),
-    publicPath: '',
-    filename: 'build.js',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    library: 'react-marzipano'
   },
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']

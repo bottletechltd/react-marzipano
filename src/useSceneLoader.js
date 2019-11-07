@@ -2,29 +2,23 @@ import { useEffect, useReducer, useState } from 'react'
 import Marzipano from 'marzipano'
 
 
-function sceneFromFilepath(viewer, filepath, levels, view) {
-  const geometry = new Marzipano.EquirectGeometry(levels)
+function sceneFromFilepath(viewer, filepath, type, levels, view) {
+  const geometry = type === 'equirect' ? new Marzipano.EquirectGeometry(levels) :
+    new Marzipano.CubeGeometry(levels)
   const source = Marzipano.ImageUrlSource.fromString(filepath)
   return viewer.createScene({ source, geometry, view })
 }
 
-function sceneFromPrefix(viewer, prefix, levels, view) {
-  const geometry = new Marzipano.CubeGeometry(levels)
-  const source = Marzipano.ImageUrlSource.fromString(`${prefix}/{f}/{z}/{x}/{y}.png`)
-  return viewer.createScene({ source, geometry, view })
-}
-
 const defaultResolution = 5376
-const defaultFov = Math.PI * 1/3
+const defaultFov = Math.PI * 1 / 3
 const defaultViewParams = { yaw: 0, pitch: 0, roll: 0, defaultFov }
 const defaultViewLimiter = Marzipano.RectilinearView.limit.traditional(defaultResolution, defaultFov)
 const defaultLevels = [
-  { width: defaultResolution  }
+  { width: defaultResolution }
 ]
 
-function loadScene(sceneSpec) {
-  const filepath = sceneSpec.filepath
-  const prefix = sceneSpec.prefix
+function loadScene (viewer, sceneSpec) {
+  const { filepath, type, prefix } = sceneSpec
 
   const levels = sceneSpec.levels || defaultLevels
 
@@ -32,23 +26,17 @@ function loadScene(sceneSpec) {
   const viewLimiter = sceneSpec.viewLimiter || defaultViewLimiter
   const view = new Marzipano.RectilinearView(viewParams, viewLimiter)
 
-  if (filepath) {
-    return sceneFromFilepath(filepath, levels, view)
-  } else if (prefix) {
-    return sceneFromPrefix(prefix, levels, view)
-  }
-
-  throw TypeError('Scene needs to be given either filepath or prefix')
+  return sceneFromFilepath(viewer, filepath, type, levels, view)
 }
 
-function makeOnRenderCompleteListener(onLoadListener) {
-  return function(stable) {
+function makeOnRenderCompleteListener (viewer, onLoadListener) {
+  return function onRenderComplete(stable) {
     if (stable) {
       if (onLoadListener) {
         onLoadListener()
       }
-      _viewer.updateSize()
-      stage.removeEventListener('renderComplete', onRenderComplete)
+      viewer.updateSize()
+      viewer.stage().removeEventListener('renderComplete', onRenderComplete)
     }
   }
 }
@@ -60,7 +48,6 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
       throw TypeError('Viewer must be provided to load scenesToLoad')
     }
   }, [viewer, scenesToLoad])
-
 
   // Loads any new scenes passed in, and handles their clean up when they are
   // not referenced anymore
@@ -75,12 +62,12 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
       const stage = viewer.stage()
       for (const [sceneId, sceneSpec] of Object.entries(scenesToLoad)) {
         if (!loadedScenes[sceneId]) {
-          const newScene = loadScene(sceneSpec)
+          const newScene = loadScene(viewer, sceneSpec)
           setLoadedScenes({ ...loadedScenes, sceneId: newScene })
 
           if (currentSceneId === sceneId) {
             setCurrentScene(newScene)
-            const newListener = makeOnRenderCompleteListener(sceneSpec.onLoad)
+            const newListener = makeOnRenderCompleteListener(viewer, sceneSpec.onLoad)
             dispatchRenderCompleteListener(newListener)
           }
         }
@@ -98,14 +85,12 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
     }
   }, [viewer, scenesToLoad])
 
-
   // Switch to a new currentScene if it was set in above effect
   useEffect(() => {
     if (viewer && currentScene) {
       currentScene.switchTo({ transitionDuration })
     }
   }, [viewer, currentScene])
-
 
   // Handle adding a new listener to stage if it was set above
   useEffect(() => {
@@ -118,7 +103,6 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
       }
     }
   }, [viewer, renderCompleteListener])
-
 
   return currentScene
 }

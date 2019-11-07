@@ -1,60 +1,60 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import styled from 'styled-components'
 
-import MainView from 'MainView'
 import rootReducer from 'store'
+import useViewer from 'useViewer'
+import useSceneLoader from 'useSceneLoader'
+import useHotspotLoader from 'useHotspotLoader'
 
 
 const store = createStore(rootReducer)
 
-const useStyles = makeStyles({
-  viewerCanvas: {
-    position: 'relative',
-    width: '100%'
-  }
-})
+const ViewerCanvas = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`
 
 export default function Viewer360(props) {
-  const classes = useStyles()
   const viewerCanvas = useRef(null)
-
-  const scenesProp = props.scenes
-  const hotspotsProp = props.hotspots
-
-  const children = React.Children.toArray(props.children)
-  const hotspotsToCreate = {...hotspotsProp,
-    ...(Object.fromEntries(
-      children.filter(child => child.type.displayName === 'Hotspot').map(
-        hotspot => {
-          const { id, children, ...otherProps } = hotspot.props
-          return [ id, {
-            ...otherProps,
-            element: React.Children.only(children)
-          }]
-        }
-      )
-    ))
-  }
-  const scenesToCreate = {...scenesProp,
-    ...(Object.fromEntries(
-      children.filter(child => child.type.displayName === 'Scene').map(
-        scene => {
-          const { id, ...otherProps } = scene.props
-          return [ id, { ...otherProps } ]
-        }
-      )
-    ))
-  }
-
   const viewer = useViewer(viewerCanvas)
-  useSceneLoader(viewer, scenesToCreate)
-  useHotspotLoader(viewer, hotspotsToCreate)
+
+  const currentScene = props.currentScene
+  const scenesProp = props.scenes
+  const hotspotsProp = props.hotspots || []
+
+  const [scenesToCreate, setScenesToCreate] = useState({})
+  useEffect(() => {
+    const children = React.Children.toArray(props.children)
+    setScenesToCreate({
+      ...(scenesProp || {}),
+      ...(Object.fromEntries(
+        children.filter(child => child.type.name === 'Scene').map(
+          scene => {
+            const { id, ...otherProps } = scene.props
+            return [id, { ...otherProps }]
+          }
+        )
+      ))
+    })
+  }, [scenesProp])
+  useSceneLoader(viewer, scenesToCreate, currentScene)
+
+  const hotspotsToCreate = [
+    ...hotspotsProp.map(props => <Hotspot viewer={viewer} {...props} />),
+    //...children.filter(child => child.type.name === 'Hotspot').map(
+    //  hotspot => React.cloneElement(hotspot, { viewer } )
+    //)
+  ]
 
   return (
     <Provider store={store}>
-      <div className={classes.viewerCanvas} ref={viewerCanvas}></div>
+      <ViewerCanvas ref={viewerCanvas} />
+      <div>
+        {hotspotsToCreate}
+      </div>
     </Provider>
   )
 }

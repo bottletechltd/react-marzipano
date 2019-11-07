@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types'
 
-
-function Scene(props) {
+function Scene (props) {
   return null
 }
 
 Scene.propTypes = {
-  filepath: PropTypes.string,
-  prefix: PropTypes.string,
+  id: PropTypes.string,
+  filepath: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   layers: PropTypes.array,
   onLoad: PropTypes.func
 }
