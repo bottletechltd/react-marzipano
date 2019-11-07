@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import Viewer360 from 'Viewer360'
-import Scene from 'Scene'
+import Scene from './Scene'
 
 
 function SceneSwitcher(props) {
@@ -15,7 +15,7 @@ function SceneSwitcher(props) {
 }
 
 export default {
-  title: 'Initializing Scenes'
+  title: 'Scenes'
 }
 
 export const oneSceneComponent = () => (

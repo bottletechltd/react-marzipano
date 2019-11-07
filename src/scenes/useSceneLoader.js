@@ -31,8 +31,8 @@ function loadScene (viewer, sceneSpec) {
 
 function makeOnRenderCompleteListener (viewer, onLoadListener) {
   return function onRenderComplete(stable) {
+    console.log('render complete')
     if (stable) {
-      console.log('render complete')
       if (onLoadListener) {
         onLoadListener()
       }

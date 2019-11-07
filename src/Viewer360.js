@@ -5,8 +5,8 @@ import styled from 'styled-components'
 
 import rootReducer from 'store'
 import useViewer from 'useViewer'
-import useSceneLoader from 'useSceneLoader'
-import useHotspotLoader from 'useHotspotLoader'
+import useSceneLoader from 'scenes/useSceneLoader'
+import useHotspotLoader from 'hotspots/useHotspotLoader'
 
 
 const store = createStore(rootReducer)
