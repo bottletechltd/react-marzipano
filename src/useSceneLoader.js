@@ -2,13 +2,6 @@ import { useEffect, useReducer, useState } from 'react'
 import Marzipano from 'marzipano'
 
 
-function sceneFromFilepath(viewer, filepath, type, levels, view) {
-  const geometry = type === 'equirect' ? new Marzipano.EquirectGeometry(levels) :
-    new Marzipano.CubeGeometry(levels)
-  const source = Marzipano.ImageUrlSource.fromString(filepath)
-  return viewer.createScene({ source, geometry, view })
-}
-
 const defaultResolution = 5376
 const defaultFov = Math.PI * 1 / 3
 const defaultViewParams = { yaw: 0, pitch: 0, roll: 0, defaultFov }
@@ -18,7 +11,7 @@ const defaultLevels = [
 ]
 
 function loadScene (viewer, sceneSpec) {
-  const { filepath, type, prefix } = sceneSpec
+  const { imageUrl, type, prefix } = sceneSpec
 
   const levels = sceneSpec.levels || defaultLevels
 
@@ -26,7 +19,14 @@ function loadScene (viewer, sceneSpec) {
   const viewLimiter = sceneSpec.viewLimiter || defaultViewLimiter
   const view = new Marzipano.RectilinearView(viewParams, viewLimiter)
 
-  return sceneFromFilepath(viewer, filepath, type, levels, view)
+  const geometry = type === 'equirect'
+    ? new Marzipano.EquirectGeometry(levels)
+    : new Marzipano.CubeGeometry(levels)
+  const source = typeof imageUrl === 'function'
+    ? new Marzipano.ImageUrlSource(imageUrl)
+    : Marzipano.ImageUrlSource.fromString(imageUrl)
+
+  return viewer.createScene({ source, geometry, view })
 }
 
 function makeOnRenderCompleteListener (viewer, onLoadListener) {

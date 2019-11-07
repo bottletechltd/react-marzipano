@@ -6,7 +6,10 @@ function Scene (props) {
 
 Scene.propTypes = {
   id: PropTypes.string,
-  filepath: PropTypes.string.isRequired,
+  imageUrl: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ]).isRequired,
   type: PropTypes.string.isRequired,
   layers: PropTypes.array,
   onLoad: PropTypes.func
