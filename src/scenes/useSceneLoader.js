@@ -55,9 +55,10 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
     switch (action.type) {
       case 'ADD':
         return { ...state, [action.sceneId]: { scene: action.scene, onLoad: action.onLoad } }
-      case 'REMOVE':
+      case 'REMOVE': {
         const { [action.sceneId]: _, ...remaining } = state
         return remaining
+      }
       default:
         return state
     }
