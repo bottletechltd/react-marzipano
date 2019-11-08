@@ -7,14 +7,14 @@ import useHotspotLoader from './useHotspotLoader'
 /**
  * Internally used Hotspot component
  *
- * This is the div that is actually rendered and handed off to
- * Marzipano to contain a user Hotspot.
+ * Doesn't actually render anything, but instead uses JS to create a div element to
+ * hand off to Marzipano to manage.
  */
 function MarzipanoHotspot(props) {
-  const rootElement = useRef(null)
+  const rootElement = useRef(document.createElement('div'))
   useHotspotLoader(props.hotspotContainer, props.transform, rootElement, props.children)
 
-  return <div ref={rootElement}></div>
+  return null
 }
 
 MarzipanoHotspot.propTypes = {
