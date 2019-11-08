@@ -18,20 +18,20 @@ export default {
   title: 'Scenes'
 }
 
-export const oneSceneComponent = () => (
+export const OneSceneComponent = () => (
   <Viewer360 currentScene='0'>
     <Scene id='0' imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
   </Viewer360>
 )
 
-export const oneCubemapComponent = () => (
+export const OneCubemapComponent = () => (
   <Viewer360 currentScene='avdxc'>
     <Scene id='avdxc' imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
       levels={[{ tileSize: 1024, size: 1024 }]} />
   </Viewer360>
 )
 
-export const multipleSceneComponents = () => {
+export const MultipleSceneComponents = () => {
   const sceneIds = ['0', 'avdxc', 'billy0']
   const [currentId, setId] = useState(sceneIds[2])
 

@@ -17,7 +17,7 @@ const defaultStyle = { background: 'red', width: 40, height: 40 }
 
 const clickable = (onClick, text) => <div onClick={onClick} style={{ ...defaultStyle, background: 'blue' }}>{text}</div>
 
-export const oneHotspotComponent = () => (
+export const OneHotspotComponent = () => (
   <Viewer360 currentScene='0'>
     <Scene id='0' imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
     <Hotspot id="dicns" transform={defaultTransform}>
@@ -28,7 +28,7 @@ export const oneHotspotComponent = () => (
   </Viewer360>
 )
 
-export const multipleHotspotComponents = () => {
+export const MultipleHotspotComponents = () => {
   const [showHotspot, setShowHotspot] = useState(true)
 
   return (

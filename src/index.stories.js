@@ -7,4 +7,4 @@ export default {
   title: 'Viewer360'
 }
 
-export const blankViewer = () => <Viewer360 />
+export const BlankViewer = () => <Viewer360 />
