@@ -1,15 +1,15 @@
 import React, { useRef } from 'react'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
 import styled from 'styled-components'
 
-import rootReducer from 'store'
 import useViewer from 'useViewer'
 import { useCreateSceneSpecs, useSceneLoader } from 'scenes'
 import { useCreateHotspots } from 'hotspots'
 
 
-const store = createStore(rootReducer)
+const Root = styled.div`
+  width: 100%;
+  height: 100%;
+`
 
 const ViewerCanvas = styled.div`
   position: relative;
@@ -30,11 +30,11 @@ export default function Viewer360(props) {
   const hotspotsToCreate = useCreateHotspots(viewer, hotspotContainer, props)
 
   return (
-    <Provider store={store}>
+    <Root>
       <ViewerCanvas ref={viewerCanvas} />
       <div>
         {hotspotsToCreate}
       </div>
-    </Provider>
+    </Root>
   )
 }
