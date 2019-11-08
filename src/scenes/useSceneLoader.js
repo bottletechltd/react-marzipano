@@ -10,7 +10,7 @@ const defaultLevels = [
   { width: defaultResolution }
 ]
 
-function loadScene (viewer, sceneSpec) {
+function loadScene(viewer, sceneSpec) {
   const { imageUrl, type } = sceneSpec
 
   const levels = sceneSpec.levels || defaultLevels
@@ -29,7 +29,7 @@ function loadScene (viewer, sceneSpec) {
   return viewer.createScene({ source, geometry, view })
 }
 
-function makeOnRenderCompleteListener (viewer, onLoadListener) {
+function makeOnRenderCompleteListener(viewer, onLoadListener) {
   return function onRenderComplete(stable) {
     if (stable) {
       if (onLoadListener) {
@@ -41,7 +41,7 @@ function makeOnRenderCompleteListener (viewer, onLoadListener) {
   }
 }
 
-function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration = 1000) {
+function useSceneLoader(viewer, scenesToLoad, transitionDuration = 1000) {
   // Check parameters are correct
   useEffect(() => {
     if (!viewer && scenesToLoad && scenesToLoad.length > 0) {
@@ -63,12 +63,17 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
         return state
     }
   }, {})
+  const [currentSceneId, setCurrentSceneId] = useState(null)
   useEffect(() => {
     if (viewer && scenesToLoad) {
-      for (const [sceneId, sceneSpec] of Object.entries(scenesToLoad)) {
+      for (const sceneSpec of scenesToLoad) {
+        const sceneId = sceneSpec.id
         if (!loadedScenes[sceneId]) {
           const newScene = loadScene(viewer, sceneSpec)
           dispatchLoadedScenes({ type: 'ADD', sceneId, scene: newScene, onLoad: sceneSpec.onLoad })
+        }
+        if (sceneSpec.current) {
+          setCurrentSceneId(sceneId)
         }
       }
     }

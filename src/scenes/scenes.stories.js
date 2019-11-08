@@ -19,30 +19,29 @@ export default {
 }
 
 export const OneSceneComponent = () => (
-  <Viewer360 currentScene='0'>
-    <Scene id='0' imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
+  <Viewer360>
+    <Scene current id='0' imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
   </Viewer360>
 )
 
 export const OneCubemapComponent = () => (
-  <Viewer360 currentScene='avdxc'>
-    <Scene id='avdxc' imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
+  <Viewer360>
+    <Scene current id='avdxc' imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
       levels={[{ tileSize: 1024, size: 1024 }]} />
   </Viewer360>
 )
 
 export const MultipleSceneComponents = () => {
-  const sceneIds = ['0', 'avdxc', 'billy0']
-  const [currentId, setId] = useState(sceneIds[2])
+  const [currentId, setId] = useState(0)
 
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <SceneSwitcher sceneIds={sceneIds} onSwitchId={id => setId(id)} />
-      <Viewer360 currentScene={currentId}>
-        <Scene id={sceneIds[0]} imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
-        <Scene id={sceneIds[1]} imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
+      <SceneSwitcher sceneIds={[0, 1, 2]} onSwitchId={id => setId(id)} />
+      <Viewer360>
+        <Scene current={currentId === 0} imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
+        <Scene current={currentId === 1} imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
           levels={[{ tileSize: 1024, size: 1024 }]} />
-        <Scene id={sceneIds[2]}
+        <Scene current={currentId === 2}
           imageUrl={(tile) => {
             const prefix = '//www.marzipano.net/media/prague'
             if (tile.z === 0) {
@@ -70,25 +69,30 @@ export const MultipleSceneComponents = () => {
   )
 }
 
-export const sceneProp = () => {
+export const SceneProp = () => {
   const scenes = {
-    '0': { imageUrl: '//www.marzipano.net/media/equirect/angra.jpg', type: 'equirect' }
+    0: { current: true, imageUrl: '//www.marzipano.net/media/equirect/angra.jpg', type: 'equirect' }
   }
-  return <Viewer360 currentScene='0' scenes={scenes} />
+  return <Viewer360 scenes={scenes} />
 }
 
-export const multipleSceneProps = () => {
-  const sceneIds = ['0', 'avdxc', 'billy0']
-  const [currentId, setId] = useState(sceneIds[1])
+export const MultipleSceneProps = () => {
+  const [currentId, setId] = useState(0)
 
-  const scenes = {
-    [sceneIds[0]]: { imageUrl: '//www.marzipano.net/media/equirect/angra.jpg', type: 'equirect' },
-    [sceneIds[1]]: {
+  const scenes = [
+    {
+      current: currentId === 0,
+      imageUrl: '//www.marzipano.net/media/equirect/angra.jpg',
+      type: 'equirect'
+    },
+    {
+      current: currentId === 1,
       imageUrl: '//www.marzipano.net/media/cubemap/{f}.jpg',
       type: 'cubemap',
       levels: [{ tileSize: 1024, size: 1024 }]
     },
-    [sceneIds[2]]: {
+    {
+      current: currentId === 2,
       imageUrl: (tile) => {
         const prefix = '//www.marzipano.net/media/prague'
         if (tile.z === 0) {
@@ -112,10 +116,10 @@ export const multipleSceneProps = () => {
         { tileSize: 512, size: 65536 }
       ]
     }
-  }
+  ]
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <SceneSwitcher sceneIds={sceneIds} onSwitchId={id => setId(id)} />
+      <SceneSwitcher sceneIds={[0, 1, 2]} onSwitchId={id => setId(id)} />
       <Viewer360 currentScene={currentId} scenes={scenes} />
     </div>
   )

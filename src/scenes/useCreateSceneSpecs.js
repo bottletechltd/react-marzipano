@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import uniqid from 'uniqid'
 
 
 function useCreateSceneSpecs(props) {
@@ -6,17 +7,17 @@ function useCreateSceneSpecs(props) {
   useEffect(() => {
     const children = React.Children.toArray(props.children)
     const scenesProp = props.scenes
-    setScenesToCreate({
-      ...(scenesProp || {}),
-      ...(Object.fromEntries(
-        children.filter(child => child.type.name === 'Scene').map(
-          scene => {
-            const { id, ...otherProps } = scene.props
-            return [id, { ...otherProps }]
-          }
-        )
-      ))
-    })
+    const mergedScenes = [
+      ...(scenesProp || []),
+      ...(
+        children.filter(child => child.type.name === 'Scene').map(scene => scene.props)
+      )
+    ]
+    console.log(children)
+    setScenesToCreate(mergedScenes.map(scene => {
+      const id = uniqid()
+      return { ...scene, id }
+    }))
   }, [props])
 
   return scenesToCreate

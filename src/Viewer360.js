@@ -18,15 +18,17 @@ const ViewerCanvas = styled.div`
 `
 
 export default function Viewer360(props) {
+  // Viewer initialization
   const viewerCanvas = useRef(null)
   const viewer = useViewer(viewerCanvas)
 
-  const currentSceneId = props.currentScene
+  // Scene Loading
   const sceneSpecs = useCreateSceneSpecs(props)
-  const loadedScenes = useSceneLoader(viewer, sceneSpecs, currentSceneId)
-  const currentScene = currentSceneId && loadedScenes ? loadedScenes[currentSceneId] : null
-  const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
+  useSceneLoader(viewer, sceneSpecs)
+  const currentScene = null
 
+  // Hotspot Loading
+  const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
   const hotspotsToCreate = useCreateHotspots(viewer, hotspotContainer, props)
 
   return (
