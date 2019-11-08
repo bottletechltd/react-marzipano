@@ -101,11 +101,12 @@ function useSceneLoader(viewer, scenesToLoad, currentSceneId, transitionDuration
 
   // Handle adding a new listener to stage if it was set above
   useEffect(() => {
-    if (viewer && viewer.stage()) {
+    if (viewer && viewer.stage() && renderCompleteListener.current) {
       viewer.stage().addEventListener('renderComplete', renderCompleteListener.current)
     }
     return () => {
-      if (viewer) {
+      if (viewer && renderCompleteListener.previous) {
+        console.log('removing listener (on cleanup)')
         viewer.stage().removeEventListener('renderComplete', renderCompleteListener.previous)
       }
     }
