@@ -5,6 +5,7 @@
   "author": "Louis Chan",
   "license": "MIT",
   "scripts": {
+    "start": "yarn run storybook",
     "dev": "yarn run storybook",
     "storybook": "start-storybook",
     "build": "webpack --mode production"
@@ -24,9 +25,28 @@
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
     "@storybook/react": "^5.2.5",
+    "@typescript-eslint/eslint-plugin": "2.x",
+    "@typescript-eslint/parser": "2.x",
+    "babel-eslint": "10.x",
     "babel-loader": "^8.0.6",
     "babel-plugin-styled-components": "^1.10.6",
-    "standard": "^14.3.1",
+    "eslint": "6.x",
+    "eslint-config-react-app": "^5.0.2",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-flowtype": "3.x",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "6.x",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "1.x",
+    "eslint-plugin-standard": "^4.0.1",
+    "stylelint": "^11.1.1",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.8.0",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
   }
 }
