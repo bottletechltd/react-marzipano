@@ -81,7 +81,7 @@ function useSceneLoader(viewer, scenesToLoad, transitionDuration = 1000) {
     return () => {
       if (viewer && scenesToLoad) {
         for (const [sceneId, loadedScene] of Object.entries(loadedScenes)) {
-          if (!scenesToLoad[sceneId]) {
+          if (!scenesToLoad.every(sceneToLoad => sceneToLoad.id !== sceneId)) {
             viewer.destroyScene(loadedScene.scene)
             dispatchLoadedScenes({ type: 'REMOVE', sceneId })
           }

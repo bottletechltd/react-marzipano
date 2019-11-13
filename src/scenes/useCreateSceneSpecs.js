@@ -13,7 +13,7 @@ function useCreateSceneSpecs(props) {
         children.filter(child => child.type.name === 'Scene').map(scene => scene.props)
       )
     ]
-    console.log(children)
+    console.log(`creating scenes ${mergedScenes.length}`)
     setScenesToCreate(mergedScenes.map(scene => {
       const id = uniqid()
       return { ...scene, id }

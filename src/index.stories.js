@@ -1,10 +1,10 @@
 import React from 'react'
 
-import Viewer360 from 'Viewer360'
+import Marzipano from 'Marzipano'
 
 
 export default {
-  title: 'Viewer360'
+  title: 'Marzipano'
 }
 
-export const BlankViewer = () => <Viewer360 />
+export const BlankViewer = () => <Marzipano />

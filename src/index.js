@@ -1,6 +1,6 @@
 import { Scene } from 'scenes'
 import { Hotspot } from 'hotspots'
-import Viewer360 from 'Viewer360'
+import Marzipano from 'Marzipano'
 
-export default Viewer360
+export default Marzipano
 export { Scene, Hotspot }

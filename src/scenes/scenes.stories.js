@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Viewer360 from 'Viewer360'
+import Marzipano from 'Marzipano'
 import Scene from './Scene'
 
 
@@ -19,16 +19,16 @@ export default {
 }
 
 export const OneSceneComponent = () => (
-  <Viewer360>
+  <Marzipano>
     <Scene current id='0' imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
-  </Viewer360>
+  </Marzipano>
 )
 
 export const OneCubemapComponent = () => (
-  <Viewer360>
+  <Marzipano>
     <Scene current id='avdxc' imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
       levels={[{ tileSize: 1024, size: 1024 }]} />
-  </Viewer360>
+  </Marzipano>
 )
 
 export const MultipleSceneComponents = () => {
@@ -37,7 +37,7 @@ export const MultipleSceneComponents = () => {
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <SceneSwitcher sceneIds={[0, 1, 2]} onSwitchId={id => setId(id)} />
-      <Viewer360>
+      <Marzipano>
         <Scene current={currentId === 0} imageUrl='//www.marzipano.net/media/equirect/angra.jpg' type='equirect'/>
         <Scene current={currentId === 1} imageUrl='//www.marzipano.net/media/cubemap/{f}.jpg' type='cubemap'
           levels={[{ tileSize: 1024, size: 1024 }]} />
@@ -46,7 +46,7 @@ export const MultipleSceneComponents = () => {
             const prefix = '//www.marzipano.net/media/prague'
             if (tile.z === 0) {
               const mapY = 'lfrbud'.indexOf(tile.face) / 6
-              return { url: `${prefix}/preview.jpg`, rect: { x: 0, y: mapY, width: 1, height: 1/6 } }
+              return { url: `${prefix}/preview.jpg`, rect: { x: 0, y: mapY, width: 1, height: 1 / 6 } }
             }
             return {
               url: `${prefix}/l${tile.z}/${tile.face}/${tile.y + 1}/${tile.x + 1}.jpg`
@@ -64,7 +64,7 @@ export const MultipleSceneComponents = () => {
             { tileSize: 512, size: 32768 },
             { tileSize: 512, size: 65536 }
           ]}/>
-      </Viewer360>
+      </Marzipano>
     </div>
   )
 }
@@ -73,7 +73,7 @@ export const SceneProp = () => {
   const scenes = {
     0: { current: true, imageUrl: '//www.marzipano.net/media/equirect/angra.jpg', type: 'equirect' }
   }
-  return <Viewer360 scenes={scenes} />
+  return <Marzipano scenes={scenes} />
 }
 
 export const MultipleSceneProps = () => {
@@ -97,7 +97,7 @@ export const MultipleSceneProps = () => {
         const prefix = '//www.marzipano.net/media/prague'
         if (tile.z === 0) {
           const mapY = 'lfrbud'.indexOf(tile.face) / 6
-          return { url: `${prefix}/preview.jpg`, rect: { x: 0, y: mapY, width: 1, height: 1/6 } }
+          return { url: `${prefix}/preview.jpg`, rect: { x: 0, y: mapY, width: 1, height: 1 / 6 } }
         }
         return {
           url: `${prefix}/l${tile.z}/${tile.face}/${tile.y + 1}/${tile.x + 1}.jpg`
@@ -120,7 +120,7 @@ export const MultipleSceneProps = () => {
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <SceneSwitcher sceneIds={[0, 1, 2]} onSwitchId={id => setId(id)} />
-      <Viewer360 currentScene={currentId} scenes={scenes} />
+      <Marzipano currentScene={currentId} scenes={scenes} />
     </div>
   )
 }

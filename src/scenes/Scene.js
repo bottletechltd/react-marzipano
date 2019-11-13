@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
  * which useCreateSceneSpec and useSceneLoader then use to load the
  * actual scenes into Marzipano.
  */
-function Scene (props) {
+function Scene(props) {
   return null
 }
 

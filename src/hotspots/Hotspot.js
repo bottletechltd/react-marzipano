@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 /**
  * User-facing Hotspot component, for the external API
  *
- * Place inside a <Viewer360> element to create a hotspot inside the viewer
+ * Place inside a <Marzipano> element to create a hotspot inside the viewer
  *
  * (For developers): Only used to carry user parameters for any given hotspot.
  * Will be converted to an internal representation inside useCreateHotspot
