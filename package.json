@@ -21,8 +21,10 @@
     "uniqid": "^5.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
+    "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.7.0",
     "@storybook/react": "^5.2.5",
     "@typescript-eslint/eslint-plugin": "2.x",
@@ -33,7 +35,7 @@
     "eslint": "6.x",
     "eslint-config-react-app": "^5.0.2",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-flowtype": "3.x",
+    "eslint-plugin-flowtype": "^4.4.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-node": "^10.0.0",
@@ -41,6 +43,7 @@
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
     "eslint-plugin-standard": "^4.0.1",
+    "flow-bin": "^0.112.0",
     "stylelint": "^11.1.1",
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-config-styled-components": "^0.1.1",
