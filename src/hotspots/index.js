@@ -1,4 +1,3 @@
-import Hotspot from './Hotspot'
-import useCreateHotspots from './useCreateHotspots'
+import useHotspots from './useHotspots'
 
-export { Hotspot, useCreateHotspots }
+export { useHotspots }

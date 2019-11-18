@@ -1,5 +1,3 @@
-import Scene from './Scene'
-import useSceneLoader from './useSceneLoader'
-import useCreateSceneSpecs from './useCreateSceneSpecs'
+import useScenes from './useScenes'
 
-export { Scene, useSceneLoader, useCreateSceneSpecs }
+export { useScenes }

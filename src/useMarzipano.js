@@ -1,20 +1,20 @@
 import useViewer from 'useViewer'
-import { useCreateSceneSpecs, useSceneLoader } from 'scenes'
-import { useCreateHotspots } from 'hotspots'
+import { useScenes } from 'scenes'
+import { useHotspots } from 'hotspots'
 
 
-function useMarzipano(viewerCanvas, spec) {
+function useMarzipano(viewerCanvas, props) {
   // Viewer initialization
   const viewer = useViewer(viewerCanvas)
 
+  const { scenes: sceneSpecs, hotspots: hotspotSpecs } = props
+
   // Scene Loading
-  const sceneSpecs = useCreateSceneSpecs(spec)
-  useSceneLoader(viewer, sceneSpecs)
-  const currentScene = null
+  const [scenes, currentScene] = useScenes(viewer, sceneSpecs)
 
   // Hotspot Loading
   const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
-  const hotspots = useCreateHotspots(hotspotContainer, spec.hotspots, [])
+  const hotspots = useHotspots(hotspotContainer, hotspotSpecs)
 }
 
 export default useMarzipano
