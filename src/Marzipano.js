@@ -30,9 +30,11 @@ import useMarzipano from './useMarzipano'
 
 export default function Marzipano(props) {
   const viewerCanvas = useRef(null)
+  const className = props.className || ''
+  const style = props.style || {}
   useMarzipano(viewerCanvas, props)
 
   return (
-    <div className={styles.viewerCanvas} ref={viewerCanvas} />
+    <div className={styles.viewerCanvas} ref={viewerCanvas} className={className} style={style} />
   )
 }
