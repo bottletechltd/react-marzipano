@@ -1,7 +1,7 @@
 {
   "name": "react-marzipano",
   "version": "0.0.1",
-  "module": "src/index.js",
+  "main": "dist/index.js",
   "author": "Louis Chan",
   "license": "MIT",
   "scripts": {

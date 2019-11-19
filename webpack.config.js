@@ -2,6 +2,12 @@ const path = require('path')
 
 module.exports = {
   entry: './src/index.js',
+  output: {
+    filename: 'index.js',
+    path: path.resolve(__dirname, 'dist/'),
+    libraryTarget: 'commonjs2',
+    library: 'react-marzipano'
+  },
   module: {
     rules: [
       {
@@ -23,12 +29,6 @@ module.exports = {
         ]
       }
     ]
-  },
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist/'),
-    libraryTarget: 'commonjs2',
-    library: 'react-marzipano'
   },
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
