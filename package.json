@@ -4,6 +4,15 @@
   "main": "dist/index.js",
   "author": "Louis Chan",
   "license": "MIT",
+  "homepage": "https://github.com/bottletechltd/react-marzipano/",
+  "repository": {
+    "type": "git",
+    "url": "github:bottletechltd/react-marzipano"
+  },
+  "bugs": {
+    "url": "https://github.com/bottletechltd/react-marzipano/issues",
+    "email": "louis@bottle.mo"
+  },
   "scripts": {
     "start": "yarn run storybook",
     "dev": "yarn run storybook",
