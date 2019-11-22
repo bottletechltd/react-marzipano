@@ -2,6 +2,7 @@
   "name": "react-marzipano",
   "version": "0.0.3",
   "main": "dist/index.js",
+  "types": "lib/index.d.ts",
   "author": "Louis Chan",
   "license": "MIT",
   "homepage": "https://github.com/bottletechltd/react-marzipano/",
