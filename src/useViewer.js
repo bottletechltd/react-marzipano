@@ -23,7 +23,7 @@
  */
 
 import { useEffect, useState } from 'react'
-import Marzipano from 'marzipano'
+import MarzipanoLib from 'marzipano'
 
 
 const viewerOpts = {
@@ -39,7 +39,7 @@ function useViewer (container) {
       throw TypeError('Container cannot be null, or viewer will not be initialized')
     }
     if (container && container.current && viewer === null) {
-      setViewer(new Marzipano.Viewer(container.current, viewerOpts))
+      setViewer(new MarzipanoLib.Viewer(container.current, viewerOpts))
     }
 
     return () => {
