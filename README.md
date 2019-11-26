@@ -2,9 +2,16 @@
 
 WARNING: This library is in early-alpha. Things may not work as expected, APIs may change with each new release. You have been warned.
 
-An (in-progress) library for wrapping Marzipano for usage within React.
+An (in-progress) library for wrapping Marzipano (https://www.marzipano.net/) for usage within React.
 
 Generally speaking, parameters for the API are the same as those for similar functions within the Marzipano API.
+
+
+## Contributing
+
+Feel free to submit issues for bug reports or pull requests if you want to directly contribute!
+
+Make sure your code passes the existing eslint checks and the stories within storybook look correct before submitting pull requests, however!
 
 
 ## Example usage of One Scene (API in-progress, may be changed in the future)
