@@ -35,6 +35,6 @@ export default function Marzipano(props) {
   useMarzipano(viewerCanvas, props)
 
   return (
-    <div className={styles.viewerCanvas} ref={viewerCanvas} className={className} style={style} />
+    <div className={`${styles.viewerCanvas} ${className}`} ref={viewerCanvas} style={style} />
   )
 }

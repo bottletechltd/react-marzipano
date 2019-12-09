@@ -27,10 +27,10 @@ import { produce } from 'immer'
 
 import useObserveChanges from 'common/useObserveChanges'
 import { isSceneSame, isScenePresent } from './isSameScene'
-import { loadScene, unloadScene } from './sceneLoading'
+import { loadScene, unloadScene, switchScene } from './sceneLoading'
 
 
-function useScenes(viewer, inputScenes = []) {
+function useScenes(viewer, inputScenes = [], onLoad = null) {
   const [scenesLookup, added, updated, deleted] = useObserveChanges(inputScenes, isScenePresent, isSceneSame)
   const [loadedScenes, dispatchLoadedScene] = useReducer((state, action) => {
     switch (action.type) {
@@ -56,7 +56,7 @@ function useScenes(viewer, inputScenes = []) {
         dispatchLoadedScene({ type: 'DELETE', key })
       }
     }
-  }, [viewer, deleted])
+  }, [viewer, loadedScenes, deleted])
 
   // Load scenes when they are first added to spec
   useEffect(() => {
@@ -73,15 +73,16 @@ function useScenes(viewer, inputScenes = []) {
   }, [viewer, scenesLookup, added])
 
   useEffect(() => {
-    if (updated.length > 0) {
+    if (viewer && updated.length > 0) {
       for (const key of updated) {
         if (scenesLookup.get(key).current && loadedScenes.has(key)) {
-          loadedScenes.get(key).switchTo()
+          const scene = loadedScenes.get(key)
+          switchScene(viewer, scene)
           setCurrentSceneKey(key)
         }
       }
     }
-  }, [loadedScenes, scenesLookup, updated, deleted])
+  }, [loadedScenes, scenesLookup, updated, deleted, onLoad, viewer])
 
   return [loadedScenes, currentScene]
 }

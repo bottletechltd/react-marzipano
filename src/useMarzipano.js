@@ -31,10 +31,10 @@ function useMarzipano(viewerCanvas, props) {
   // Viewer initialization
   const viewer = useViewer(viewerCanvas)
 
-  const { scenes: sceneSpecs, hotspots: hotspotSpecs } = props
+  const { scenes: sceneSpecs, hotspots: hotspotSpecs, onLoad } = props
 
   // Scene Loading
-  const [scenes, currentScene] = useScenes(viewer, sceneSpecs)
+  const [scenes, currentScene] = useScenes(viewer, sceneSpecs, onLoad)
 
   // Hotspot Loading
   const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
