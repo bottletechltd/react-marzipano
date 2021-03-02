@@ -23,9 +23,12 @@
  */
 
 import React, { useState } from 'react'
+import { enableMapSet } from 'immer'
 
 import Marzipano from '../Marzipano'
 
+
+enableMapSet()
 
 export default {
   title: 'Hotspots'

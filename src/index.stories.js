@@ -23,9 +23,12 @@
  */
 
 import React from 'react'
+import { enableMapSet } from 'immer'
 
-import Marzipano from 'Marzipano'
+import Marzipano from './Marzipano'
 
+
+enableMapSet()
 
 export default {
   title: 'Marzipano'

@@ -24,7 +24,7 @@
 
 import React, { useState } from 'react'
 
-import Marzipano from 'Marzipano'
+import Marzipano from '../Marzipano'
 
 
 function SceneSwitcher(props) {

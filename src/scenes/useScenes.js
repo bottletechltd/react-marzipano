@@ -25,7 +25,7 @@
 import { useEffect, useReducer, useState } from 'react'
 import { produce } from 'immer'
 
-import useObserveChanges from 'common/useObserveChanges'
+import useObserveChanges from '../common/useObserveChanges'
 import { isSceneSame, isScenePresent } from './isSameScene'
 import { loadScene, unloadScene, switchScene } from './sceneLoading'
 

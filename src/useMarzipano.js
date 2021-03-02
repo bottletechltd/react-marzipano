@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-import useViewer from 'useViewer'
-import { useScenes } from 'scenes'
-import { useHotspots } from 'hotspots'
+import useViewer from './useViewer'
+import { useScenes } from './scenes'
+import { useHotspots } from './hotspots'
 
 
 function useMarzipano(viewerCanvas, props) {

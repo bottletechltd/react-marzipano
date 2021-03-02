@@ -25,7 +25,7 @@
 import { useEffect, useReducer } from 'react'
 import { produce } from 'immer'
 
-import useObserveChanges from 'common/useObserveChanges'
+import useObserveChanges from '../common/useObserveChanges'
 import isSameHotspot from './isSameHotspot'
 import { createHotspot, destroyHotspot } from './hotspotLoading'
 
