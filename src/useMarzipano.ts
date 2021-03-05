@@ -22,35 +22,26 @@
  * SOFTWARE.
  */
 
-import { useEffect, useState } from 'react'
-import MarzipanoLib from 'marzipano'
+import React from 'react'
+
+import { MarzipanoProps } from './types'
+import useViewer from './useViewer'
+import { useScenes } from './scenes'
+import { useHotspots } from './hotspots'
 
 
-const viewerOpts = {
-  controls: {
-    mouseViewMode: 'drag' // drag|qtvr
-  }
+function useMarzipano(viewerCanvas: React.RefObject<HTMLCanvasElement>, props: MarzipanoProps) {
+  // Viewer initialization
+  const viewer = useViewer(viewerCanvas)
+
+  const { scenes: sceneSpecs, hotspots: hotspotSpecs, onLoad } = props
+
+  // Scene Loading
+  const [scenes, currentScene] = useScenes(viewer, sceneSpecs, onLoad)
+
+  // Hotspot Loading
+  const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
+  const hotspots = useHotspots(hotspotContainer, hotspotSpecs)
 }
 
-function useViewer (container) {
-  const [viewer, setViewer] = useState(null)
-  useEffect(() => {
-    if (container === null) {
-      throw TypeError('Container cannot be null, or viewer will not be initialized')
-    }
-    if (container && container.current && viewer === null) {
-      setViewer(new MarzipanoLib.Viewer(container.current, viewerOpts))
-    }
-
-    return () => {
-      if (viewer !== null) {
-        viewer.destroy()
-        setViewer(null)
-      }
-    }
-  }, [container])
-
-  return viewer
-}
-
-export default useViewer
+export default useMarzipano

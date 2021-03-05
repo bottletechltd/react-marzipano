@@ -24,6 +24,9 @@
 
 import Marzipano from 'marzipano'
 
+import { SceneSpec } from '../types'
+import { Scene, Viewer } from '../marzipano-types'
+
 
 const defaultResolution = 5376
 const defaultFov = Math.PI * 1 / 3
@@ -34,13 +37,13 @@ const defaultLevels = [
 ]
 
 
-const loadScene = viewer => sceneSpec => {
+const loadScene = (viewer: Viewer) => (sceneSpec: SceneSpec) => {
   const { imageUrl, type } = sceneSpec
 
-  const levels = sceneSpec.levels || defaultLevels
+  const levels = sceneSpec.levels ?? defaultLevels
 
-  const viewParams = sceneSpec.viewParams || defaultViewParams
-  const viewLimiter = sceneSpec.viewLimiter || defaultViewLimiter
+  const viewParams = sceneSpec.viewParams ?? defaultViewParams
+  const viewLimiter = sceneSpec.viewLimiter ?? defaultViewLimiter
   const view = new Marzipano.RectilinearView(viewParams, viewLimiter)
 
   const geometry = type === 'equirect'
@@ -53,13 +56,15 @@ const loadScene = viewer => sceneSpec => {
   return viewer.createScene({ source, geometry, view })
 }
 
-const unloadScene = viewer => scene => {
+const unloadScene = (viewer: Viewer) => (scene: Scene) => {
   viewer.destroyScene(scene)
 }
 
-let currentListener = null
+type OnLoadFunc = () => void
 
-function switchScene(viewer, scene, transitionDuration, onLoad = null) {
+let currentListener: OnLoadFunc | null = null
+
+function switchScene(viewer: Viewer, scene: Scene, transitionDuration?: number, onLoad?: OnLoadFunc) {
   if (viewer && scene) {
     if (onLoad) {
       if (currentListener) {
@@ -72,4 +77,4 @@ function switchScene(viewer, scene, transitionDuration, onLoad = null) {
     scene.switchTo({ transitionDuration })
   }
 }
-export { loadScene, unloadScene, switchScene }
+export { loadScene, unloadScene, switchScene, OnLoadFunc }

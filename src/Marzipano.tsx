@@ -26,12 +26,13 @@ import React, { useRef } from 'react'
 
 import styles from './Marzipano.css'
 import useMarzipano from './useMarzipano'
+import { MarzipanoProps } from './types'
 
 
-export default function Marzipano(props) {
+export default function Marzipano(props: MarzipanoProps): React.ReactElement {
   const viewerCanvas = useRef(null)
-  const className = props.className || ''
-  const style = props.style || {}
+  const className = props.className ?? ''
+  const style = props.style ?? {}
   useMarzipano(viewerCanvas, props)
 
   return (

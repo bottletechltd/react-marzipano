@@ -23,10 +23,20 @@
  */
 
 import { useEffect, useState } from 'react'
-import { produce } from 'immer'
+import { produce, castDraft } from 'immer'
 import isEqual from 'lodash.isequal'
 import uniqid from 'uniqid'
 
+
+type Key = string
+
+interface KeyedItem {
+  key: Key
+}
+
+type ObservableTuple = [Map<Key, T & KeyedItem>, Key[], Key[], Key[]]
+
+type CompareFunction = (arg0: any, arg1: any): boolean
 
 /**
  * Observe changes to items and output which specific items changed.
@@ -57,15 +67,16 @@ import uniqid from 'uniqid'
  * The key field gives a small performance boost to lookups, allowing 'exist' checks
  * to happen in O(1) time as opposed to iterating over the whole table
  */
-function useObserveChanges(items, eqFuncPresent = Object.is, eqFuncSame = null) {
-  const [itemsLookup, setItemsLookup] = useState(new Map())
-  const [added, setAdded] = useState([])
-  const [updated, setUpdated] = useState([])
-  const [deleted, setDeleted] = useState([])
+function useObserveChanges<T>(items: Array<T & KeyedItem>, eqFuncPresent: CompareFunction = Object.is, eqFuncSame: CompareFunction | null = null): ObservableTuple {
+  const [itemsLookup, setItemsLookup] = useState<Map<Key, T & KeyedItem>>(new Map<Key, T & KeyedItem>())
+  const [added, setAdded] = useState<Key[]>([])
+  const [updated, setUpdated] = useState<Key[]>([])
+  const [deleted, setDeleted] = useState<Key[]>([])
 
   useEffect(() => {
+    const initialState: ObservableTuple = [itemsLookup, [], [], []]
     const [newItemsLookup, addedKeys, updatedKeys, deletedKeys] = produce(
-      [itemsLookup, [], [], []],
+      initialState,
       ([draftItemsLookup, draftAdded, draftUpdated, draftDeleted]) => {
         const neededKeys = new Set()
 
@@ -81,11 +92,11 @@ function useObserveChanges(items, eqFuncPresent = Object.is, eqFuncSame = null) 
           const key = existingKey || uniqid()
 
           if (!existingKey) {
-            draftItemsLookup.set(key, item)
+            draftItemsLookup.set(key, castDraft(item))
             draftAdded.push(key)
             draftUpdated.push(key)
           } else if (outdated) {
-            draftItemsLookup.set(key, item)
+            draftItemsLookup.set(key, castDraft(item))
             draftUpdated.push(key)
           }
 

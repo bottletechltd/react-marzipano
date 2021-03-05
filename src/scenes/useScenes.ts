@@ -25,14 +25,20 @@
 import { useEffect, useReducer, useState } from 'react'
 import { produce } from 'immer'
 
+import { SceneSpec } from '../types'
+import { Scene, Viewer } from '../marzipano-types'
 import useObserveChanges from '../common/useObserveChanges'
 import { isSceneSame, isScenePresent } from './isSameScene'
 import { loadScene, unloadScene, switchScene } from './sceneLoading'
 
 
-function useScenes(viewer, inputScenes = [], onLoad = null) {
+type LoadedSceneAction =
+  | { type: 'ADD', key: string, scene: Scene }
+  | { type: 'DELETE', key: string }
+
+function useScenes(viewer: Viewer, inputScenes: SceneSpec[] = [], onLoad = null) {
   const [scenesLookup, added, updated, deleted] = useObserveChanges(inputScenes, isScenePresent, isSceneSame)
-  const [loadedScenes, dispatchLoadedScene] = useReducer((state, action) => {
+  const [loadedScenes, dispatchLoadedScene] = useReducer((state: Map<string, Scene>, action: LoadedSceneAction) => {
     switch (action.type) {
       case 'ADD':
         return produce(state, draftLoadedScenes => {
@@ -46,7 +52,7 @@ function useScenes(viewer, inputScenes = [], onLoad = null) {
         return state
     }
   }, new Map())
-  const [currentSceneKey, setCurrentSceneKey] = useState(null)
+  const [currentSceneKey, setCurrentSceneKey] = useState<string | null>(null)
   const currentScene = currentSceneKey && loadedScenes.has(currentSceneKey) ? loadedScenes.get(currentSceneKey) : null
 
   useEffect(() => {

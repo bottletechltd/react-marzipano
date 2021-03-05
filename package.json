@@ -1,86 +1,37 @@
 {
   "name": "react-marzipano",
-  "version": "0.0.3",
-  "main": "dist/index.js",
-  "types": "lib/index.d.ts",
-  "author": "Louis Chan",
-  "license": "MIT",
-  "homepage": "https://github.com/bottletechltd/react-marzipano/",
-  "repository": {
-    "type": "git",
-    "url": "github:bottletechltd/react-marzipano"
-  },
-  "bugs": {
-    "url": "https://github.com/bottletechltd/react-marzipano/issues",
-    "email": "louis@bottle.mo"
-  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "npm run storybook",
-    "dev": "npm run storybook",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006",
-    "build": "webpack --mode production",
-    "test": "jest",
     "build-storybook": "build-storybook"
   },
-  "peerDependencies": {
-    "marzipano": "^0.10.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bottletechltd/react-marzipano.git"
   },
-  "dependencies": {
-    "immer": "^8.0.1",
-    "lodash.isequal": "^4.5.0",
-    "prop-types": "^15.7.2",
-    "uniqid": "^5.3.0"
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bottletechltd/react-marzipano/issues"
   },
+  "homepage": "https://github.com/bottletechltd/react-marzipano#readme",
   "devDependencies": {
-    "@babel/cli": "^7.7.0",
-    "@babel/core": "^7.7.0",
-    "@babel/preset-env": "^7.7.1",
-    "@babel/preset-flow": "^7.0.0",
-    "@babel/preset-react": "^7.7.0",
+    "@babel/core": "^7.13.8",
     "@storybook/addon-actions": "^6.1.20",
     "@storybook/addon-essentials": "^6.1.20",
     "@storybook/addon-links": "^6.1.20",
     "@storybook/react": "^6.1.20",
-    "@testing-library/react": "^9.3.2",
-    "@typescript-eslint/eslint-plugin": "2.x",
-    "@typescript-eslint/parser": "2.x",
-    "babel-eslint": "10.x",
-    "babel-jest": "^24.9.0",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.2.0",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "eslint": "6.x",
-    "eslint-config-react-app": "^5.0.2",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-react": "7.x",
-    "eslint-plugin-react-hooks": "2.3.0",
-    "eslint-plugin-standard": "^4.0.1",
-    "jest": "^24.9.0",
-    "marzipano": "^0.10.1",
-    "nock": "^11.7.0",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-test-renderer": "^16.12.0",
-    "style-loader": "^1.0.0",
-    "stylelint": "^13.11.0",
-    "stylelint-config-recommended": "^3.0.0",
-    "typescript": "^3.7.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "@types/uniqid": "^5.3.0",
+    "babel-loader": "^8.2.2",
+    "typescript": "^4.2.2"
   },
-  "jest": {
-    "moduleDirectories": [
-      "src",
-      "node_modules"
-    ],
-    "modulePaths": [
-      "src"
-    ],
-    "moduleNameMapper": {
-      "\\.(css|less)$": "identity-obj-proxy"
-    }
+  "dependencies": {
+    "marzipano": "^0.10.1",
+    "uniqid": "^5.3.0"
   }
 }
