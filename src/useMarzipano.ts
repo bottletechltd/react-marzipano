@@ -22,26 +22,61 @@
  * SOFTWARE.
  */
 
-import React from 'react'
+import React, { useRef } from 'react'
+import { Viewer } from 'marzipano'
 
-import { MarzipanoProps } from './types'
+import { SceneSpec, HotspotSpec } from './types'
 import useViewer from './useViewer'
 import { useScenes } from './scenes'
 import { useHotspots } from './hotspots'
 
 
-function useMarzipano(viewerCanvas: React.RefObject<HTMLCanvasElement>, props: MarzipanoProps) {
-  // Viewer initialization
-  const viewer = useViewer(viewerCanvas)
+export interface ViewerOpts {
+  controls?: {
+    mouseViewMode?: 'drag' | 'qtvr',
+    dragMode?: 'pan' | 'pinch',
+    scrollZoom?: boolean,
+  },
+  stage?: {
+    antialias?: boolean,
+    preserveDrawingBuffer?: boolean,
+    generateMipmaps?: boolean,
+  },
+  cursors?: {
+    drag?: {
+      active?: string,
+      inactive?: string,
+      disabled?: string,
+    },
+  },
+}
 
-  const { scenes: sceneSpecs, hotspots: hotspotSpecs, onLoad } = props
+export interface UseMarzipanoProps {
+  viewerOpts: ViewerOpts,
+  scenes: SceneSpec[],
+  hotspots: HotspotSpec[],
+}
+
+export interface UseMarzipanoResult {
+  viewerCanvas: React.RefObject<HTMLDivElement>,
+  scenes: Scene[],
+  hotspots: Hotspot[],
+}
+
+function useMarzipano({ viewerOpts, scenes: sceneSpecs, hotspots: hotspotSpecs }: UseMarzipanoProps): UseMarzipanoResult {
+  const viewerCanvasRef = useRef<HTMLDivElement>(null)
+
+  // Viewer initialization
+  const viewer = new Viewer(viewerOpts)
 
   // Scene Loading
-  const [scenes, currentScene] = useScenes(viewer, sceneSpecs, onLoad)
+  const [scenes, currentScene] = useScenes(viewer, sceneSpecs)
 
   // Hotspot Loading
   const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
   const hotspots = useHotspots(hotspotContainer, hotspotSpecs)
+
+  return { viewerCanvas: viewerCanvasRef, scenes, hotspots }
 }
 
 export default useMarzipano

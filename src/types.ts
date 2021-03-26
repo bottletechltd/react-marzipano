@@ -9,10 +9,3 @@ export interface SceneSpec {
 
 export interface HotspotSpec {
 }
-
-export interface MarzipanoProps {
-  className?: string,
-  style?: string,
-  scenes: SceneSpec[],
-  hotspots: HotspotSpec[],
-}

@@ -36,7 +36,7 @@ interface KeyedItem {
 
 type ObservableTuple = [Map<Key, T & KeyedItem>, Key[], Key[], Key[]]
 
-type CompareFunction = (arg0: any, arg1: any): boolean
+type CompareFunction = (arg0: any, arg1: any) => boolean
 
 /**
  * Observe changes to items and output which specific items changed.

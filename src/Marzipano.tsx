@@ -22,20 +22,27 @@
  * SOFTWARE.
  */
 
-import React, { useRef } from 'react'
+import React from 'react'
 
-import styles from './Marzipano.css'
 import useMarzipano from './useMarzipano'
-import { MarzipanoProps } from './types'
+import { SceneSpec, HotspotSpec } from './types'
 
 
-export default function Marzipano(props: MarzipanoProps): React.ReactElement {
-  const viewerCanvas = useRef(null)
-  const className = props.className ?? ''
-  const style = props.style ?? {}
-  useMarzipano(viewerCanvas, props)
+export interface MarzipanoProps {
+  className?: string,
+  style?: any,
+  scenes: SceneSpec[],
+  hotspots: HotspotSpec[],
+}
+
+export default function Marzipano({ className, style, scenes, hotspots }: MarzipanoProps): React.ReactElement {
+  const viewerCanvasRef = useMarzipano({ scenes, hotspots })
 
   return (
-    <div className={`${styles.viewerCanvas} ${className}`} ref={viewerCanvas} style={style} />
+    <div
+      className={className}
+      style={{ width: '100%', height: '100%', ...style }}
+      ref={viewerCanvasRef}
+    />
   )
 }
