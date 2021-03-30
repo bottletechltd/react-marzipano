@@ -37,7 +37,7 @@ const defaultLevels = [
 ]
 
 
-const loadScene = (viewer: Viewer) => (sceneSpec: SceneSpec) => {
+function loadScene(viewer: Viewer, sceneSpec: SceneSpec) {
   const { imageUrl, type } = sceneSpec
 
   const levels = sceneSpec.levels ?? defaultLevels
@@ -56,7 +56,7 @@ const loadScene = (viewer: Viewer) => (sceneSpec: SceneSpec) => {
   return viewer.createScene({ source, geometry, view })
 }
 
-const unloadScene = (viewer: Viewer) => (scene: Scene) => {
+function unloadScene(viewer: Viewer, scene: Scene) {
   viewer.destroyScene(scene)
 }
 
@@ -77,4 +77,6 @@ function switchScene(viewer: Viewer, scene: Scene, transitionDuration?: number, 
     scene.switchTo({ transitionDuration })
   }
 }
-export { loadScene, unloadScene, switchScene, OnLoadFunc }
+
+export type { OnLoadFunc }
+export { loadScene, unloadScene, switchScene }

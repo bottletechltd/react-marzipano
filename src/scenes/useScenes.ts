@@ -22,96 +22,81 @@
  * SOFTWARE.
  */
 
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useMemo, useReducer, useState } from 'react'
 import { produce } from 'immer'
+import { v4 as uuidv4 } from 'uuid'
 
-import { SceneSpec } from '../types'
-import { Scene, Viewer } from '../marzipano-types'
-import useObserveChanges from '../common/useObserveChanges'
-import { isSceneSame, isScenePresent } from './isSameScene'
+import { Container, SceneSpec } from '../types'
+import { Hotspot, Scene, Viewer } from '../marzipano-types'
 import { loadScene, unloadScene, switchScene } from './sceneLoading'
+import useHotspots, { UseHotspotsInput } from '../hotspots/useHotspots'
 
 
-export interface SceneSpec {
-  key: string,
-  imageUrl: string,
-  type: string,
-  levels?: any,
-  viewParams?: any,
-  viewLimiter?: any,
-}
-
-type LoadedSceneAction =
+type SceneCacheAction =
   | { type: 'ADD', key: string, scene: Scene }
   | { type: 'DELETE', key: string }
+  | { type: 'DELETEALL' }
 
-function useScenes(viewer: Viewer, inputScenes: SceneSpec[] = []) {
-  const [scenesLookup, added, updated, deleted] = useObserveChanges(inputScenes, isScenePresent, isSceneSame)
-  const [loadedSceneKeys, setLoadedScenes] = useState<Set<string>>(new Set())
-  const [loadedScenes, dispatchLoadedScene] = useReducer((state: Map<string, Scene>, action: LoadedSceneAction) => {
-    switch (action.type) {
-      case 'ADD':
-        return produce(state, draftLoadedScenes => {
-          draftLoadedScenes.set(action.key, action.scene)
-        })
-      case 'DELETE':
-        return produce(state, draftLoadedScenes => {
-          draftLoadedScenes.delete(action.key)
-        })
-      default:
-        return state
+export type UseScenesResult = [Map<string, Scene>, Map<string, Hotspot>]
+
+function useScenes(viewer: Viewer | null, inputScenes: Container<SceneSpec> = [], currentSceneKey?: string, sceneTransitionDuration?: number): UseScenesResult {
+  const inputScenesAsMap = useMemo<Map<string, SceneSpec>>(() => {
+    if (inputScenes instanceof Map) {
+      return inputScenes
     }
-  }, new Map())
-  const [currentSceneKey, setCurrentSceneKey] = useState<string | null>(null)
-  const currentScene = currentSceneKey && loadedScenes.has(currentSceneKey) ? loadedScenes.get(currentSceneKey) : null
+    if (inputScenes instanceof Array) {
+      return new Map(inputScenes.map((sceneSpec) => {
+        const key = sceneSpec.key ?? uuidv4()
+        return [key, sceneSpec]
+      }))
+    }
+    return new Map(Object.entries(inputScenes))
+  }, [inputScenes])
+  const [sceneCache, dispatchToSceneCache] = useReducer((state: Map<string, Scene>, action: SceneCacheAction) => {
+    return produce(state, draftSceneCache => {
+      switch (action.type) {
+        case 'ADD':
+          draftSceneCache.set(action.key, action.scene)
+          break
+        case 'DELETE':
+          draftSceneCache.delete(action.key)
+          break
+        case 'DELETEALL':
+          draftSceneCache.clear()
+          break
+      }
+    })
+  }, new Map<string, Scene>())
+  const [useHotspotsInput, setUseHotspotsInput] = useState<UseHotspotsInput | undefined>(undefined)
 
   useEffect(() => {
-    for (const scene of inputScenes) {
-      if (!loadedScenesKeys.has(scene.key)) {
-        // add
+    if (viewer === null) return
+    for (const [key, scene] of sceneCache.entries()) {
+      if (!inputScenesAsMap.has(key)) {
+        unloadScene(viewer, scene)
+        dispatchToSceneCache({ type: 'DELETE', key })
       }
     }
-    for (const key of loadedSceneKeys.keys()) {
-      if (!loadedScene
+    for (const [key, sceneSpec] of inputScenesAsMap.entries()) {
+      let scene = sceneCache.get(key)
+      if (scene === undefined) {
+        scene = loadScene(viewer, sceneSpec)
+        dispatchToSceneCache({ type: 'ADD', key, scene })
+      }
+      if (currentSceneKey !== undefined && currentSceneKey === key ||
+          currentSceneKey === undefined && sceneSpec.isCurrent !== undefined) {
+        switchScene(viewer, scene, sceneTransitionDuration)
+        setUseHotspotsInput({
+          hotspotContainer: scene.hotspotContainer,
+          hotspotSpecs: sceneSpec.hotspots,
+        })
+      }
     }
   }, [viewer, inputScenes])
 
-  useEffect(() => {
-    if (viewer && deleted.length > 0) {
-      for (const key of deleted) {
-        unloadScene(viewer)(loadedScenes.get(key))
-        dispatchLoadedScene({ type: 'DELETE', key })
-      }
-    }
-  }, [viewer, loadedScenes, deleted])
+  const hotspotCache = useHotspots(useHotspotsInput)
 
-  // Load scenes when they are first added to spec
-  useEffect(() => {
-    if (viewer && added.length > 0) {
-      for (const key of added) {
-        const sceneSpec = scenesLookup.get(key)
-        const scene = loadScene(viewer)(sceneSpec)
-        dispatchLoadedScene({ type: 'ADD', key, scene })
-        if (sceneSpec.current) {
-          setCurrentSceneKey(null)
-        }
-      }
-    }
-  }, [viewer, scenesLookup, added])
-
-  useEffect(() => {
-    if (viewer && updated.length > 0) {
-      for (const key of updated) {
-        if (scenesLookup.get(key).current && loadedScenes.has(key)) {
-          const scene = loadedScenes.get(key)
-          switchScene(viewer, scene)
-          setCurrentSceneKey(key)
-        }
-      }
-    }
-  }, [loadedScenes, scenesLookup, updated, deleted, onLoad, viewer])
-
-  return [loadedScenes, currentScene]
+  return [sceneCache, hotspotCache]
 }
 
 export default useScenes

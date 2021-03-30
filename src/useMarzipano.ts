@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-import React, { useRef } from 'react'
-import { Viewer } from 'marzipano'
+import React, { useEffect, useState, useRef } from 'react'
+import { Viewer as ViewerConstructor } from 'marzipano'
 
-import { SceneSpec, HotspotSpec } from './types'
-import useViewer from './useViewer'
+import { Container, SceneSpec } from './types'
+import { Scene, Hotspot, Viewer } from './marzipano-types'
 import { useScenes } from './scenes'
-import { useHotspots } from './hotspots'
 
 
 export interface ViewerOpts {
@@ -52,29 +51,36 @@ export interface ViewerOpts {
 }
 
 export interface UseMarzipanoProps {
-  viewerOpts: ViewerOpts,
-  scenes: SceneSpec[],
-  hotspots: HotspotSpec[],
+  viewerOpts?: ViewerOpts,
+  scenes: Container<SceneSpec>,
 }
 
 export interface UseMarzipanoResult {
   viewerCanvas: React.RefObject<HTMLDivElement>,
-  scenes: Scene[],
-  hotspots: Hotspot[],
+  scenes: Map<string, Scene>,
+  hotspots: Map<string, Hotspot>,
 }
 
-function useMarzipano({ viewerOpts, scenes: sceneSpecs, hotspots: hotspotSpecs }: UseMarzipanoProps): UseMarzipanoResult {
+const defaultViewerOpts = {
+  controls: {
+    mouseViewMode: 'drag',
+  },
+}
+
+function useMarzipano({ viewerOpts, scenes: sceneSpecs }: UseMarzipanoProps): UseMarzipanoResult {
   const viewerCanvasRef = useRef<HTMLDivElement>(null)
 
   // Viewer initialization
-  const viewer = new Viewer(viewerOpts)
+  const [viewer, setViewer] = useState<Viewer | null>(null)
+  useEffect(() => {
+    if (viewerCanvasRef.current !== null) {
+      const viewer = new ViewerConstructor(viewerCanvasRef.current, viewerOpts ?? defaultViewerOpts)
+      setViewer(viewer)
+    }
+  }, [viewerCanvasRef])
 
   // Scene Loading
-  const [scenes, currentScene] = useScenes(viewer, sceneSpecs)
-
-  // Hotspot Loading
-  const hotspotContainer = currentScene && currentScene.hotspotContainer ? currentScene.hotspotContainer() : null
-  const hotspots = useHotspots(hotspotContainer, hotspotSpecs)
+  const [scenes, hotspots] = useScenes(viewer, sceneSpecs)
 
   return { viewerCanvas: viewerCanvasRef, scenes, hotspots }
 }

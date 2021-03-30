@@ -25,27 +25,27 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import { HotspotContainer, Hotspot } from '../marzipano-types'
 
-const createHotspot = hotspotContainer => (element) => {
+
+function createHotspot(hotspotContainer: HotspotContainer, element: React.ReactElement): Hotspot {
   const { transform, ...otherProps } = element.props
-  if (hotspotContainer) {
-    const rootElement = document.createElement('div')
 
-    const { yaw, pitch, radius } = transform.coords
-    const opts = { perspective: { radius } }
+  const rootElement = document.createElement('div')
 
-    const hotspot = hotspotContainer.createHotspot(rootElement, { yaw, pitch }, opts)
+  const { yaw, pitch, radius } = transform.coords
+  const opts = { perspective: { radius } }
 
-    ReactDOM.render(React.cloneElement(element, otherProps), hotspot.domElement())
+  const hotspot = hotspotContainer.createHotspot(rootElement, { yaw, pitch }, opts)
 
-    hotspot.show()
+  ReactDOM.render(React.cloneElement(element, otherProps), hotspot.domElement())
 
-    return hotspot
-  }
-  return null
+  hotspot.show()
+
+  return hotspot
 }
 
-const destroyHotspot = hotspotContainer => (hotspot) => {
+function destroyHotspot(hotspotContainer: HotspotContainer, hotspot: Hotspot) {
   hotspotContainer.destroyHotspot(hotspot)
 }
 

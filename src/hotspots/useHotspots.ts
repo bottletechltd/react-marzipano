@@ -24,51 +24,70 @@
 
 import { useEffect, useReducer } from 'react'
 import { produce } from 'immer'
+import { v4 as uuidv4 } from 'uuid'
 
-import useObserveChanges from '../common/useObserveChanges'
-import isSameHotspot from './isSameHotspot'
+import { Container, HotspotSpec } from '../types'
+import { HotspotContainer, Hotspot } from '../marzipano-types'
 import { createHotspot, destroyHotspot } from './hotspotLoading'
 
+
+export interface UseHotspotsInput {
+  hotspotContainer: HotspotContainer,
+  hotspotSpecs: Container<HotspotSpec>,
+}
+export type UseHotspotsResult = Map<string, Hotspot>
+
+type HotspotsCacheAction = 
+  | { type: 'ADD', key: string, hotspot: Hotspot }
+  | { type: 'DELETE', key: string }
 
 /**
  * Creates marzipano hotspots in the given HotspotContainer
  */
-function useHotspots(hotspotContainer, hotspotSpecs = []) {
-  const [hotspotLookup, added, , deleted] = useObserveChanges(hotspotContainer ? hotspotSpecs : [], isSameHotspot)
-  const [loadedHotspots, dispatchHotspots] = useReducer((currentHotspots, action) => {
-    switch (action.type) {
-      case 'ADD':
-        return produce(currentHotspots, draftLoadedHotspots => {
-          draftLoadedHotspots.set(action.key, action.hotspot)
-        })
-      case 'DELETE':
-        return produce(currentHotspots, draftLoadedHotspots => {
-          draftLoadedHotspots.delete(action.key)
-        })
-      default:
-        return currentHotspots
-    }
-  }, new Map())
+function useHotspots(input?: UseHotspotsInput): UseHotspotsResult {
+  const [hotspotsCache, dispatchHotspotsCache] = useReducer((state: Map<string, Hotspot>, action: HotspotsCacheAction) => {
+    return produce(state, draftHotspotsCache => {
+      switch (action.type) {
+        case 'ADD':
+          draftHotspotsCache.set(action.key, action.hotspot)
+        case 'DELETE':
+          draftHotspotsCache.delete(action.key)
+      }
+    })
+  }, new Map<string, Hotspot>())
 
   useEffect(() => {
-    if (hotspotContainer && added.length > 0) {
-      for (const key of added) {
-        const newHotspot = createHotspot(hotspotContainer)(hotspotLookup.get(key))
-        dispatchHotspots({ type: 'ADD', key, hotspot: newHotspot })
+    if (input !== undefined) {
+      const { hotspotContainer, hotspotSpecs } = input
+      let hotspotSpecsAsMap = null
+      if (hotspotSpecs instanceof Map) {
+        hotspotSpecsAsMap = hotspotSpecs
+      } else if (hotspotSpecs instanceof Array) {
+        hotspotSpecsAsMap = new Map(hotspotSpecs.map((data) => {
+          const key = data.key ?? uuidv4()
+          return [key, data]
+        }))
+      } else {
+        hotspotSpecsAsMap = new Map(Object.entries(hotspotSpecs))
+      }
+
+      for (const [key, hotspot] of hotspotsCache.entries()) {
+        if (!hotspotSpecsAsMap.has(key)) {
+          destroyHotspot(hotspotContainer, hotspot)
+          dispatchHotspotsCache({ type: 'DELETE', key })
+        }
+      }
+
+      for (const [key, hotspotSpec] of hotspotSpecsAsMap.entries()) {
+        if (!hotspotsCache.has(key)) {
+          const hotspot = createHotspot(hotspotContainer, hotspotSpec.element)
+          dispatchHotspotsCache({ type: 'ADD', key, hotspot })
+        }
       }
     }
-  }, [hotspotContainer, added])
+  }, [input])
 
-  useEffect(() => {
-    if (hotspotContainer && deleted.length > 0) {
-      for (const key of deleted) {
-        destroyHotspot(hotspotContainer)(loadedHotspots.get(key))
-        dispatchHotspots({ type: 'DELETE', key })
-      }
-    }
-  }, [hotspotContainer, deleted])
-
-  return hotspotLookup
+  return hotspotsCache
 }
 
 export default useHotspots

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-import Marzipano from 'Marzipano'
-import useMarzipano from 'useMarzipano'
+import Marzipano from './Marzipano'
+import useMarzipano from './useMarzipano'
 import { enableMapSet } from 'immer'
 
 enableMapSet()
