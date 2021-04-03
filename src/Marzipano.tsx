@@ -31,7 +31,7 @@ import { SceneSpec } from './types'
 export interface MarzipanoProps {
   className?: string,
   style?: any,
-  scenes: SceneSpec[],
+  scenes: Map<string, SceneSpec>,
   viewerOpts?: ViewerOpts,
 }
 

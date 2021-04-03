@@ -87,7 +87,7 @@ function useScenes(viewer: Viewer | null, inputScenes: Container<SceneSpec> = []
           currentSceneKey === undefined && sceneSpec.isCurrent !== undefined) {
         switchScene(viewer, scene, sceneTransitionDuration)
         setUseHotspotsInput({
-          hotspotContainer: scene.hotspotContainer,
+          hotspotContainer: scene.hotspotContainer(),
           hotspotSpecs: sceneSpec.hotspots,
         })
       }

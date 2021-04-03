@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import ReactDOM from 'react-dom'
 
+import { HotspotElementProps } from '../types'
 import { HotspotContainer, Hotspot } from '../marzipano-types'
 
 
-function createHotspot(hotspotContainer: HotspotContainer, element: React.ReactElement): Hotspot {
+function createHotspot(hotspotContainer: HotspotContainer, element: React.ReactElement<HotspotElementProps>): Hotspot {
   const { transform, ...otherProps } = element.props
 
   const rootElement = document.createElement('div')

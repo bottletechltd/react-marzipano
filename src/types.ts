@@ -17,6 +17,16 @@ export interface SceneSpec extends KeyedData {
   viewLimiter?: any,
 }
 
+export interface HotspotElementProps {
+  transform: {
+    coords: {
+      yaw: number,
+      pitch: number,
+      radius: number,
+    },
+  },
+}
+
 export interface HotspotSpec extends KeyedData {
-  element: React.ReactElement
+  element: React.ReactElement<HotspotElementProps>
 }

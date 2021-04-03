@@ -26,7 +26,7 @@ type Stage = EventTarget & {
 
 export interface Scene {
   switchTo(opts: SwitchSceneOpts): void,
-  hotspotContainer: HotspotContainer,
+  hotspotContainer(): HotspotContainer,
 }
 
 interface RectilinearViewCoords {
