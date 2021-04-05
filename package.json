@@ -1,7 +1,7 @@
 {
   "name": "react-marzipano",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "An (in-progress) library for wrapping Marzipano for usage within React.",
   "files": [
     "dist"
   ],
