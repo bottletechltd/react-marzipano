@@ -25,8 +25,16 @@
 import Marzipano from './Marzipano'
 import useMarzipano from './useMarzipano'
 import { enableMapSet } from 'immer'
+import { SceneSpec, HotspotElementProps, HotspotSpec } from './types'
 
 enableMapSet()
 
-export default Marzipano
-export { useMarzipano }
+export {
+  Marzipano,
+  useMarzipano,
+}
+export type {
+  SceneSpec,
+  HotspotSpec,
+  HotspotElementProps,
+}

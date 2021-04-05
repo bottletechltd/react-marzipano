@@ -1,7 +1,7 @@
 import './main.css'
 import ReactDOM from 'react-dom'
 import React from 'react'
-import Marzipano from '../../src'
+import { Marzipano } from '../../dist/react-marzipano.es.js'
 
 
 const scenes = new Map([

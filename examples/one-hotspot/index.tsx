@@ -1,8 +1,8 @@
 import '../../main.css'
 import ReactDOM from 'react-dom'
 import React from 'react'
-import Marzipano from '../../src'
-import { SceneSpec, HotspotSpec, HotspotElementProps } from '../../src/types'
+import { Marzipano } from '../../dist/react-marzipano.es.js'
+import type { SceneSpec, HotspotSpec, HotspotElementProps } from '../../src'
 
 
 function Hotspot(props: HotspotElementProps): React.ReactElement {
